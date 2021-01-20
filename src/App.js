@@ -1,23 +1,22 @@
-import logo from './logo.svg';
+import {useState} from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import {Container} from "reactstrap";
+import Result from "./components/Result";
+import Entry from "./components/Entry";
 
 function App() {
+  const [data, setData] = useState(null);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Container>
+      {data 
+      ? 
+      <Result setData={setData} data={data} />
+      :
+      <Entry setData={setData} data={data} />
+      }
+      </Container>
     </div>
   );
 }
