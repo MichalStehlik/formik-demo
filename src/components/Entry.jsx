@@ -1,86 +1,78 @@
-import {Button, Form, FormGroup, Input, Label, FormFeedback} from "reactstrap";
-import { useFormik } from 'formik';
-
-const validate = values => {
-    const errors = {};
-    if (!values.name)
-        errors.name = "Name must be set";
-    if (!values.number)
-        errors.number = "Number must be set";
-    if (values.number < 0)
-        errors.number = "Number should be above zero";
-    if (values.confirm === false)
-        errors.confirm = "Confirm it";
-    return errors;
-}
+import {Button, FormGroup, Input, Label, FormFeedback} from "reactstrap";
+import { Formik, Field, Form } from 'formik';
 
 const Entry = ({data, setData}) => {
-    const formik = useFormik({
-        initialValues: {
-          name: 'Zoltán',
-          number: 10,
-          confirm: true
-        },
-        validate: validate,
-        onSubmit: values => {
-          setData(values);
-        },
-    });
-    console.log(formik);
     return (
-        <>
-            <Form onSubmit={formik.handleSubmit}>
+        <Formik
+        initialValues={{
+            name: 'Zoltán',
+            number: 10,
+            confirm: true
+          }}
+          validate={values => {
+            const errors = {};
+            if (!values.name)
+                errors.name = "Name must be set";
+            if (!values.number)
+                errors.number = "Number must be set";
+            if (values.number < 0)
+                errors.number = "Number should be above zero";
+            if (values.confirm === false)
+                errors.confirm = "Confirm it";
+            return errors;
+          }}
+          onSubmit={values => 
+            setData(values)
+          }
+        >
+            {({isSubmitting, errors, touched, values, setFieldValue, handleBlur, isValid, dirty}) => (
+            <Form>
                 <FormGroup>
                     <Label for="name">Name</Label>
                     <Input 
+                        tag={Field}
                         name="name" 
                         id="name" 
                         placeholder="Adam" 
-                        onChange={formik.handleChange} 
-                        onBlur={formik.handleBlur}
-                        value={formik.values.name}
-                        invalid={Boolean(formik.errors.name)} 
-                        valid={formik.touched.name} 
+                        invalid={errors.name !== undefined}
+                        valid={errors.name === undefined}
                     />
-                    {formik.errors.name ? <FormFeedback invalid>{formik.errors.name}</FormFeedback> : null}
+                    {errors.name ? <FormFeedback invalid>{errors.name}</FormFeedback> : null}
                 </FormGroup>
                 <FormGroup>
                     <Label for="number">Number</Label>
                     <Input 
+                        tag={Field}
                         type="number" 
                         name="number" 
                         id="number" 
                         placeholder="#" 
-                        onChange={formik.handleChange} 
-                        onBlur={formik.handleBlur}
-                        value={formik.values.number} 
-                        invalid={Boolean(formik.errors.number)} 
-                        valid={formik.touched.number}
+                        invalid={errors.number !== undefined}
+                        valid={errors.number === undefined}
                     />
-                    {formik.errors.number ? <FormFeedback invalid>{formik.errors.number}</FormFeedback> : null}
+                    {errors.number ? <FormFeedback invalid>{errors.number}</FormFeedback> : null}
                 </FormGroup>
                 <FormGroup check>
                     <Label check>
                         <Input 
+                            tag={Field}
                             id="confirm"
                             name="confirm"
-                            type="checkbox" 
-                            onChange={formik.handleChange} 
-                            onBlur={formik.handleBlur}
-                            checked={formik.values.confirm} 
-                            invalid={Boolean(formik.errors.confirm)} 
-                            valid={formik.touched.confirm}
+                            type="checkbox"
+                            invalid={errors.check !== undefined}
+                            valid={errors.check === undefined} 
                         />{' '}
                         Confirm
-                        {formik.errors.confirm ? <FormFeedback invalid>{formik.errors.confirm}</FormFeedback> : null}
+                        {errors.confirm ? <FormFeedback invalid>{errors.confirm}</FormFeedback> : null}
                     </Label>
                 </FormGroup>
                 <div>
                     <Button type="submit" color="primary">Submit</Button>
-                    <Button onClick={e=>{formik.setValues({...formik.values, number: Math.floor(100 * Math.random())})}}>Random</Button>
+                    <Button onClick={e=>setFieldValue("number", Math.floor(100 * Math.random()),true)}>Random</Button>
                 </div>
             </Form>
-        </>
+            )}
+        </Formik>
     )
 }
 
